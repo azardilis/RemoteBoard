@@ -1,3 +1,5 @@
+package RemoteBoard;
+
 import java.rmi.*;
 
 public interface NotificationSinkInterface extends Remote {

@@ -1,3 +1,5 @@
+package RemoteBoard;
+
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
