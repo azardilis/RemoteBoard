@@ -1,5 +1,3 @@
-package RemoteBoard;
-
 import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -59,7 +57,7 @@ public class TeacherApp extends JPanel implements MouseListener,MouseMotionListe
 		isDragged = true;
 		pointsCovered.add(new Point(e.getX(),e.getY()));
 		try {
-			source.fireEvent(new Point(e.getX(),e.getY()));
+		    source.fireEvent(new WriteSignal(WriteSignal.MOUSE_WRIT,new Point(e.getX(),e.getY())));
 		} catch (RemoteException e1) {
 			e1.printStackTrace();
 		}
@@ -71,7 +69,12 @@ public class TeacherApp extends JPanel implements MouseListener,MouseMotionListe
 	}
 	
 	public void mousePressed(MouseEvent arg0) {
-		pointsCovered = new ArrayList<Point>();	
+		pointsCovered = new ArrayList<Point>();
+		try {
+		    source.fireEvent(new WriteSignal(WriteSignal.MOUSE_RELOC,new Point(0,0)));
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
 	}
 	public void mouseReleased(MouseEvent arg0) {}
 	public void mouseMoved(MouseEvent e) {}

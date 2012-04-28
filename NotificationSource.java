@@ -1,5 +1,3 @@
-package RemoteBoard;
-
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -29,6 +27,7 @@ public class NotificationSource extends UnicastRemoteObject
 
 	@Override
 	public synchronized void register(NotificationSinkInterface sink) throws RemoteException {
+	    
 		if (!registeredSinks.contains(sink)) {
 			registeredSinks.add(sink);
 		}

@@ -82,11 +82,15 @@ class Student extends NotificationSink {
 
 	@Override
 	public Object notify(Notification n) throws RemoteException {
-	    System.out.println("notified");
-		Point p = (Point)n.getInfo();
+	    WriteSignal ws = (WriteSignal) n.getInfo();
+	    if (ws.getSignal() == WriteSignal.MOUSE_RELOC) {
+		pointsCovered = new ArrayList<Point>();
+	    } else if (ws.getSignal() == WriteSignal.MOUSE_WRIT) {
+		Point p = ws.getPoint();
 		pointsCovered.add(p);
 		sa.repaint();
-		return null;
+	    }
+	    return null;
 	}
 	
 }

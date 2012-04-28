@@ -1,5 +1,3 @@
-package RemoteBoard;
-
 import java.rmi.*;
 
 public interface NotificationSourceInterface extends Remote {
