@@ -12,6 +12,7 @@ import java.awt.Stroke;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
+import java.awt.Color;
 
 public class StudentApp extends JPanel implements MouseListener {
 
@@ -21,7 +22,9 @@ public class StudentApp extends JPanel implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private Student student;
 	private Stroke curveStroke;
-	
+    private boolean clearing;
+    private Color col;
+    
 	public void init(){
 		try {
 			student = new Student(this);
@@ -38,18 +41,35 @@ public class StudentApp extends JPanel implements MouseListener {
 	public void paint(Graphics g ){
 		Graphics2D g2D = (Graphics2D) g;
 		g2D.setStroke(curveStroke);
+		g2D.setColor(col);
 		Point p1;
 		if (student.pointsCovered.size() > 0) {
 			Point p = student.pointsCovered.get(student.pointsCovered.size()-1);
 			if (student.pointsCovered.size() > 1) {
+			    System.out.println("drawingCurve");
 				p1 = student.pointsCovered.get(student.pointsCovered.size()-2);
 				g2D.draw(new CubicCurve2D.Double(p.x,p.y,p.x,p.y,p1.x,p1.y,p1.x,p1.y));
 			}
-		}		
+		}
+		
+		if (clearing) {
+		    g.setColor(this.getBackground());
+		    g2D.fillRect(0,0,getWidth(),getHeight());
+		}
+		clearing = false;
 	}
 
 	public Student getStudent(){return this.student;}
-	
+    
+    public void changeColour(Color c) {
+	this.col = c;
+	repaint();
+    }
+    public void clear(){
+	clearing = true;
+	repaint();
+    }
+
     public void mouseClicked(MouseEvent evt) {
 	try {
 	    NotificationSourceInterface source = (NotificationSourceInterface)
@@ -82,6 +102,7 @@ class Student extends NotificationSink {
 
 	@Override
 	public Object notify(Notification n) throws RemoteException {
+	    System.out.println("got notified");
 	    WriteSignal ws = (WriteSignal) n.getInfo();
 	    if (ws.getSignal() == WriteSignal.MOUSE_RELOC) {
 	    	pointsCovered = new ArrayList<Point>();
@@ -89,7 +110,21 @@ class Student extends NotificationSink {
 	    	Point p = ws.getPoint();
 	    	pointsCovered.add(p);
 	    	sa.repaint();
+	    } else if (ws.getSignal() == WriteSignal.CLEAR) {
+		pointsCovered = new ArrayList<Point>();
+		sa.clear();
+	    } else if (ws.getSignal() == WriteSignal.COLOUR_CHANGE) {
+		sa.changeColour(ws.getCol());
 	    }
 	    return null;
 	}
+}
+
+class Pointer {
+
+
+    public void paint(Graphics g) {
+	
+    }
+
 }
