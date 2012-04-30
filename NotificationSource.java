@@ -17,8 +17,9 @@ public class NotificationSource extends UnicastRemoteObject
 	
 	public synchronized void fireEvent(Object info) throws RemoteException {
 		Notification note = new Notification(info,this);
-		System.out.println("sending notes");
+		
 		for (NotificationSinkInterface sink : registeredSinks) {
+		    System.out.println("sending notes");
 			sink.notify(note);
 		}
 	}
