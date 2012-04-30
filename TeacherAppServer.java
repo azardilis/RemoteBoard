@@ -13,7 +13,7 @@ public class TeacherAppServer {
 				appFrame.setVisible(true);
 				appFrame.setSize(FRAME_WIDTH,FRAME_LENGTH);
 				appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				TeacherApp source = new TeacherApp();
+				TeacherAppPanel source = new TeacherAppPanel();
 				source.init();
 				appFrame.setContentPane(source);
 			}

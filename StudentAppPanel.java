@@ -6,12 +6,16 @@ import java.rmi.Naming;
 
 import javax.swing.*;
 
+
 public class StudentAppPanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private StudentApp drawPanel;
 	
 	public void init(){
-		System.out.println("init drawPanel");
 		this.setLayout(new BorderLayout());
 		drawPanel = new StudentApp();
 		drawPanel.init();
@@ -23,6 +27,7 @@ public class StudentAppPanel extends JPanel {
 	
 }
 
+@SuppressWarnings("serial")
 class LowerPanel extends JPanel {
 	
 	private JButton registerButton;
