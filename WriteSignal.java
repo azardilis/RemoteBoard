@@ -3,7 +3,11 @@ import java.io.Serializable;
 
 public class WriteSignal implements Serializable {
 
-    public static final int MOUSE_RELOC = 0;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public static final int MOUSE_RELOC = 0;
     public static final int MOUSE_WRIT = 1;
     private Point point;
     private int signal;

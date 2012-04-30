@@ -27,10 +27,8 @@ public class StudentApp extends JPanel implements MouseListener {
 			student = new Student(this);
 			Naming.rebind("notificationSink",student);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		curveStroke = new BasicStroke(4);
@@ -50,6 +48,8 @@ public class StudentApp extends JPanel implements MouseListener {
 		}		
 	}
 
+	public Student getStudent(){return this.student;}
+	
     public void mouseClicked(MouseEvent evt) {
 	try {
 	    NotificationSourceInterface source = (NotificationSourceInterface)
@@ -84,13 +84,12 @@ class Student extends NotificationSink {
 	public Object notify(Notification n) throws RemoteException {
 	    WriteSignal ws = (WriteSignal) n.getInfo();
 	    if (ws.getSignal() == WriteSignal.MOUSE_RELOC) {
-		pointsCovered = new ArrayList<Point>();
+	    	pointsCovered = new ArrayList<Point>();
 	    } else if (ws.getSignal() == WriteSignal.MOUSE_WRIT) {
-		Point p = ws.getPoint();
-		pointsCovered.add(p);
-		sa.repaint();
+	    	Point p = ws.getPoint();
+	    	pointsCovered.add(p);
+	    	sa.repaint();
 	    }
 	    return null;
 	}
-	
 }
