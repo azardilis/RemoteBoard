@@ -46,11 +46,7 @@ public class TeacherApp extends JPanel implements MouseListener,MouseMotionListe
 
     public void setColour(Color c) {
 	this.col = c;
-	try {
-	    source.fireEvent(new WriteSignal(WriteSignal.COLOUR_CHANGE,c,null));
-	 } catch (RemoteException e1) {
-		    e1.printStackTrace();
-		}
+	source.fireEvent(new WriteSignal(WriteSignal.COLOUR_CHANGE,c,null));
 	repaint();
     }
 	public void paint(Graphics g) {
@@ -74,11 +70,7 @@ public class TeacherApp extends JPanel implements MouseListener,MouseMotionListe
 	
 	public void clear(){
 		pointsCovered = new ArrayList<Point>();
-		try {
-		    source.fireEvent(new WriteSignal(WriteSignal.CLEAR,null));
-		} catch (RemoteException e1) {
-		    e1.printStackTrace();
-		}
+		source.fireEvent(new WriteSignal(WriteSignal.CLEAR,null));
 		clearing = true;
 		isDragged = false;
 		repaint();
@@ -87,11 +79,7 @@ public class TeacherApp extends JPanel implements MouseListener,MouseMotionListe
 	public void mouseDragged(MouseEvent e) {
 		isDragged = true;
 		pointsCovered.add(new Point(e.getX(),e.getY()));
-		try {
-		    source.fireEvent(new WriteSignal(WriteSignal.MOUSE_WRIT,new Point(e.getX(),e.getY())));
-		} catch (RemoteException e1) {
-		    e1.printStackTrace();
-		}
+		source.fireEvent(new WriteSignal(WriteSignal.MOUSE_WRIT,new Point(e.getX(),e.getY())));
 		repaint();
 	}
 

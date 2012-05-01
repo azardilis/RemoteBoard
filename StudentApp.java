@@ -14,7 +14,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import java.awt.Color;
 
-public class StudentApp extends JPanel implements MouseListener {
+public class StudentApp extends JPanel {
 
 	/**
 	 * 
@@ -35,7 +35,6 @@ public class StudentApp extends JPanel implements MouseListener {
 			e.printStackTrace();
 		}
 		curveStroke = new BasicStroke(4);
-		this.addMouseListener(this);
 	}
 	
 	public void paint(Graphics g ){
@@ -69,20 +68,6 @@ public class StudentApp extends JPanel implements MouseListener {
 	clearing = true;
 	repaint();
     }
-
-    public void mouseClicked(MouseEvent evt) {
-	try {
-	    NotificationSourceInterface source = (NotificationSourceInterface)
-		Naming.lookup("rmi://localhost/notificationSource");
-	    source.register(student);
-	} catch (Exception ex) {
-	    ex.printStackTrace();
-	}
-    }
-    public void mouseEntered(MouseEvent evt){}
-    public void mouseExited(MouseEvent evt){}
-    public void mousePressed(MouseEvent evt){}
-    public void mouseReleased(MouseEvent evt){}
 }
 
 class Student extends NotificationSink {
@@ -102,7 +87,6 @@ class Student extends NotificationSink {
 
 	@Override
 	public Object notify(Notification n) throws RemoteException {
-	    System.out.println("got notified");
 	    WriteSignal ws = (WriteSignal) n.getInfo();
 	    if (ws.getSignal() == WriteSignal.MOUSE_RELOC) {
 	    	pointsCovered = new ArrayList<Point>();

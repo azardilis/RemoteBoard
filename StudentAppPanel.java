@@ -32,7 +32,8 @@ class LowerPanel extends JPanel {
 	
 	private JButton registerButton;
 	private boolean isRegistered = false;
-	
+    private static final int MAX_TRIES = 10;
+
 	public void init(final Student s){
 		this.setLayout(new GridLayout(1,3));
 		this.add(new JLabel());
@@ -46,24 +47,51 @@ class LowerPanel extends JPanel {
 					    NotificationSourceInterface source = (NotificationSourceInterface)
 						Naming.lookup("rmi://localhost/notificationSource");
 					    source.unregister(s);
+					    registerButton.setText("register");
 					} catch (Exception ex) {
-					    ex.printStackTrace();
+					    if (retryUnregister(s)) registerButton.setText("register");
 					}
-					registerButton.setText("register");
+					
 				} else {
 					//run the register procedure
 					try {
 					    NotificationSourceInterface source = (NotificationSourceInterface)
 						Naming.lookup("rmi://localhost/notificationSource");
 					    source.register(s);
+					    registerButton.setText("unregister");
 					} catch (Exception ex) {
-					    ex.printStackTrace();
+					    if (retryRegister(s)) registerButton.setText("unregister");
 					}
-					registerButton.setText("unregister");
+					
 				}
 				isRegistered =! isRegistered;
 			}
 		}
 		registerButton.addActionListener(new registerListener());
 	}
+
+    public boolean retryUnregister(NotificationSinkInterface sink){
+	
+	for (int i=0;i<MAX_TRIES;i++) {
+	    try {
+		NotificationSourceInterface source = (NotificationSourceInterface)
+						Naming.lookup("rmi://localhost/notificationSource");
+		source.unregister(sink);
+		return true;
+	    } catch (Exception e) {}
+	}
+	return false;
+    }
+
+    public boolean retryRegister(NotificationSinkInterface sink){
+      	for (int i=0;i<MAX_TRIES;i++) {
+	    try {
+		NotificationSourceInterface source = (NotificationSourceInterface)
+						Naming.lookup("rmi://localhost/notificationSource");
+		source.register(sink);
+		return true;
+	    } catch (Exception e) {}
+	}
+	return false;
+     }
 }
