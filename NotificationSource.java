@@ -2,17 +2,16 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.Vector;
 
 public class NotificationSource extends UnicastRemoteObject 
 								implements Serializable, NotificationSourceInterface{
 
-    private static final int MAX_TRIES = 10;
-    private static final long serialVersionUID = 1L;
     private ArrayList<NotificationSinkInterface> registeredSinks;
     private String name;
-    private int index;
-    private int numTries;
-    
+    private Vector<ArrayBlockingQueue<Notification>> messages = new Vector<ArrayBlockingQueue<Notification>>();
+
 	public NotificationSource() throws RemoteException {
 		registeredSinks = new ArrayList<NotificationSinkInterface>();
 		this.name = "exampleSource";
@@ -20,26 +19,29 @@ public class NotificationSource extends UnicastRemoteObject
 	
 	public synchronized void fireEvent(Object info) {
 		Notification note = new Notification(info,this);
-		for (int i=index;i<registeredSinks.size();i++) {
-		    try {
-			NotificationSinkInterface sink = registeredSinks.get(i);
-			sink.notify(note);
-		    } catch (RemoteException e) {
-			if (!retry(i,note)) unregister(registeredSinks.get(i));
-		    }
+		for (int i=0;i<registeredSinks.size();i++) {
+		    NotificationSinkInterface sink = registeredSinks.get(i);
+		    if (messages.get(i).size() > 5) unregister(sink);
+		    else {
+			messages.get(i).add(note);
+			deliverMessages(sink,i);
+		     }
 		}
 	}
-	
-    public boolean retry(int index, Notification note) {
-	NotificationSinkInterface sink = registeredSinks.get(index);
-	for (int i=0;i<MAX_TRIES;i++) {
-	    try {
-		sink.notify(note);
-		return true;
-	    } catch (RemoteException e) {}
-	}
-	return false;
+
+    public void deliverMessages(NotificationSinkInterface sink, int ind) {
+	ArrayBlockingQueue<Notification> msgs = messages.get(ind);
+	Notification note = null;
+	    for (int i=0;i<msgs.size();i++) {
+		try {
+		    note = msgs.take();
+		    sink.notify(note);
+		} catch (Exception e) {
+		    msgs.add(note);
+		}
+	    }
     }
+
 	public synchronized String getName() throws RemoteException{ return this.name; }
 
 	@Override
@@ -47,14 +49,16 @@ public class NotificationSource extends UnicastRemoteObject
 	    
 		if (!registeredSinks.contains(sink)) {
 			registeredSinks.add(sink);
+			messages.add(new ArrayBlockingQueue<Notification>(10));
 		}
 	}
 
 	@Override
 	public synchronized void unregister(NotificationSinkInterface sink){
 		if (registeredSinks.contains(sink)) {
+		    messages.remove(registeredSinks.indexOf(sink));
 			registeredSinks.remove(sink);
+			
 		    } 
-		
 	}
 }
