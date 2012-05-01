@@ -120,11 +120,3 @@ class Student extends NotificationSink {
 	}
 }
 
-class Pointer {
-
-
-    public void paint(Graphics g) {
-	
-    }
-
-}

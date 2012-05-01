@@ -6,10 +6,11 @@ import java.util.ArrayList;
 public class NotificationSource extends UnicastRemoteObject 
 								implements Serializable, NotificationSourceInterface{
 
-	private static final long serialVersionUID = 1L;
-	private ArrayList<NotificationSinkInterface> registeredSinks;
-	private String name;
-	
+    private static final long serialVersionUID = 1L;
+    private ArrayList<NotificationSinkInterface> registeredSinks;
+    private String name;
+    private int index;
+
 	public NotificationSource() throws RemoteException {
 		registeredSinks = new ArrayList<NotificationSinkInterface>();
 		this.name = "exampleSource";
@@ -17,11 +18,10 @@ public class NotificationSource extends UnicastRemoteObject
 	
 	public synchronized void fireEvent(Object info) throws RemoteException {
 		Notification note = new Notification(info,this);
-		
 		for (NotificationSinkInterface sink : registeredSinks) {
-		    System.out.println("sending notes");
 			sink.notify(note);
 		}
+		
 	}
 	
 	public synchronized String getName() throws RemoteException{ return this.name; }

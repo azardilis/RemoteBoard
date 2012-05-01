@@ -48,7 +48,7 @@ public class TeacherApp extends JPanel implements MouseListener,MouseMotionListe
 	this.col = c;
 	try {
 	    source.fireEvent(new WriteSignal(WriteSignal.COLOUR_CHANGE,c,null));
-		} catch (RemoteException e1) {
+	 } catch (RemoteException e1) {
 		    e1.printStackTrace();
 		}
 	repaint();
@@ -65,8 +65,7 @@ public class TeacherApp extends JPanel implements MouseListener,MouseMotionListe
 				g2D.draw(new CubicCurve2D.Double(p.x,p.y,p.x,p.y,p1.x,p1.y,p1.x,p1.y));
 			}
 		}
-		
-		if (clearing){
+   		if (clearing){
 		    g.setColor(this.getBackground());
 		    g2D.fillRect(0,0,getWidth(),getHeight());
 		}
@@ -86,22 +85,23 @@ public class TeacherApp extends JPanel implements MouseListener,MouseMotionListe
 	}
 
 	public void mouseDragged(MouseEvent e) {
-	    System.out.println("dragged");
 		isDragged = true;
 		pointsCovered.add(new Point(e.getX(),e.getY()));
 		try {
 		    source.fireEvent(new WriteSignal(WriteSignal.MOUSE_WRIT,new Point(e.getX(),e.getY())));
 		} catch (RemoteException e1) {
-			e1.printStackTrace();
+		    e1.printStackTrace();
 		}
 		repaint();
 	}
 
-	public void mouseClicked(MouseEvent arg0) {
+	public void mouseClicked(MouseEvent e) {
 	    pointsCovered = new ArrayList<Point>();
+	    isDragged = false;
 	}
 	
 	public void mousePressed(MouseEvent arg0) {
+	   
 		pointsCovered = new ArrayList<Point>();
 		try {
 		    source.fireEvent(new WriteSignal(WriteSignal.MOUSE_RELOC,new Point(0,0)));
@@ -109,9 +109,11 @@ public class TeacherApp extends JPanel implements MouseListener,MouseMotionListe
 		    e.printStackTrace();
 		}
 	}
-	public void mouseReleased(MouseEvent arg0) {}
-	public void mouseMoved(MouseEvent e) {}
+    public void mouseReleased(MouseEvent arg0) {isDragged = false;}
+	public void mouseMoved(MouseEvent e) {
+	    	}
 	public void mouseEntered(MouseEvent arg0) {}
 	public void mouseExited(MouseEvent arg0) {}
 	
 }
+
