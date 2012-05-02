@@ -10,5 +10,4 @@ public interface NotificationSourceInterface extends Remote {
 	
 	public void fireEvent(Object obj) throws RemoteException;
 	
-	public String getName() throws RemoteException;
 }
