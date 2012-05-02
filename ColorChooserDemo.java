@@ -48,7 +48,7 @@ public class ColorChooserDemo extends JPanel
      */
     public static void createAndShowGUI(TeacherApp t) {
         //Create and set up the window.
-        JFrame frame = new JFrame("ColorChooserDemo");
+        JFrame frame = new JFrame("ColourChooser");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
  
         //Create and set up the content pane.
