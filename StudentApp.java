@@ -18,20 +18,13 @@ public class StudentApp extends JPanel {
     
     private static final int CURVE_WIDTH = 4;
     private static final long serialVersionUID = 1L;
-    private Student student;
     private Stroke curveStroke;
     private boolean clearing;
     private Color col;
+    private List<Point> pointsCovered;
 
     public void init(){
-	try {
-	    student = new Student(this);
-	    Naming.rebind("notificationSink",student);
-	} catch (RemoteException e) {
-	    e.printStackTrace();
-	} catch (MalformedURLException e) {
-	    e.printStackTrace();
-	}
+	pointsCovered = new ArrayList<Point>();
 	curveStroke = new BasicStroke(StudentApp.CURVE_WIDTH);
     }
 	
@@ -39,10 +32,10 @@ public class StudentApp extends JPanel {
 	Graphics2D g2D = (Graphics2D) g;
 	g2D.setStroke(curveStroke);
 	g2D.setColor(col);
-	if (student.pointsCovered.size() > 1) {
-	    for (int i=1;i<student.pointsCovered.size();i++) {
-		Point p = student.pointsCovered.get(i);
-		Point p1 = student.pointsCovered.get(i-1);
+	if (pointsCovered.size() > 1) {
+	    for (int i=1;i<pointsCovered.size();i++) {
+		Point p = pointsCovered.get(i);
+		Point p1 = pointsCovered.get(i-1);
 		g2D.draw(new CubicCurve2D.Double(p.x,p.y,p.x,p.y,p1.x,p1.y,p1.x,p1.y));
 	    }
 	}
@@ -52,8 +45,6 @@ public class StudentApp extends JPanel {
 	}
 	clearing = false;
     }
-
-    public Student getStudent(){return this.student;}
     
     public void changeColour(Color c) {
 	this.col = c;
@@ -64,34 +55,42 @@ public class StudentApp extends JPanel {
 	clearing = true;
 	repaint();
     }
-}
 
-class Student extends NotificationSink {
-
-    private static final long serialVersionUID = 1L;
-    public List<Point> pointsCovered;
-    private StudentApp sa;
-
-    public Student(StudentApp sa) throws RemoteException {
-	super();
-	pointsCovered = new ArrayList<Point>();
-	this.sa = sa;
-    }
-
-    @Override
-    public Object notify(Notification n) throws RemoteException {
-	WriteSignal ws = (WriteSignal) n.getInfo();
+    public void interpretSignal(WriteSignal ws) {
 	if (ws.getSignal() == WriteSignal.MOUSE_RELOC) {
 	    pointsCovered = new ArrayList<Point>();
 	} else if (ws.getSignal() == WriteSignal.MOUSE_WRIT) {
 	    Point p = ws.getPoint();
 	    pointsCovered.add(p);
-	    sa.repaint();
+	    repaint();
 	} else if (ws.getSignal() == WriteSignal.CLEAR) {
 	    pointsCovered = new ArrayList<Point>();
-	    sa.clear();
+	    clear();
 	} else if (ws.getSignal() == WriteSignal.COLOUR_CHANGE) {
-	    sa.changeColour(ws.getCol());
+	    changeColour(ws.getCol());
+	}
+    }
+}
+
+class Student extends NotificationSink {
+
+    private static final long serialVersionUID = 1L;
+    private StudentAppPanel sa1;
+    private StudentAppPanel sa2;
+
+    public Student(StudentAppPanel sa1,StudentAppPanel sa2) throws RemoteException {
+	super();
+	this.sa1 = sa1;
+	this.sa2 = sa2;
+    }
+
+    @Override
+    public Object notify(Notification n) throws RemoteException {
+	WriteSignal ws = (WriteSignal) n.getInfo();
+	if (n.getSource().equals("source0")) {
+	    sa1.passSignal(ws);
+	} else {
+	    sa2.passSignal(ws);
 	}
 	return null;
     }
