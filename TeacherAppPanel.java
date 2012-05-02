@@ -13,10 +13,10 @@ public class TeacherAppPanel extends JPanel {
 	public TeacherAppPanel(){
 		
 	}
-	public void init(){
+	public void init(int id){
 		this.setLayout(new BorderLayout());
 		this.ta = new TeacherApp();
-		ta.init();
+		ta.init(id);
 		LowerPanelTeacher lp = new LowerPanelTeacher();
 		lp.init(ta);
 		this.add(ta,BorderLayout.CENTER);

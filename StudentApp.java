@@ -24,7 +24,8 @@ public class StudentApp extends JPanel {
 	private Stroke curveStroke;
     private boolean clearing;
     private Color col;
-    
+    private Color col1;
+
 	public void init(){
 		try {
 			student = new Student(this);
@@ -41,16 +42,15 @@ public class StudentApp extends JPanel {
 		Graphics2D g2D = (Graphics2D) g;
 		g2D.setStroke(curveStroke);
 		g2D.setColor(col);
-		Point p1;
 		if (student.pointsCovered.size() > 0) {
-			Point p = student.pointsCovered.get(student.pointsCovered.size()-1);
 			if (student.pointsCovered.size() > 1) {
-			    System.out.println("drawingCurve");
-				p1 = student.pointsCovered.get(student.pointsCovered.size()-2);
+			    for (int i=1;i<student.pointsCovered.size();i++) {
+				Point p = student.pointsCovered.get(i);
+				Point p1 = student.pointsCovered.get(i-1);
 				g2D.draw(new CubicCurve2D.Double(p.x,p.y,p.x,p.y,p1.x,p1.y,p1.x,p1.y));
+			    }
 			}
 		}
-		
 		if (clearing) {
 		    g.setColor(this.getBackground());
 		    g2D.fillRect(0,0,getWidth(),getHeight());
@@ -63,6 +63,10 @@ public class StudentApp extends JPanel {
     public void changeColour(Color c) {
 	this.col = c;
 	repaint();
+    }
+    
+    public void changeColour1(Color c) {
+	this.col1 = c;
     }
     public void clear(){
 	clearing = true;
@@ -78,8 +82,8 @@ class Student extends NotificationSink {
 	private static final long serialVersionUID = 1L;
 	public List<Point> pointsCovered;
 	private StudentApp sa;
-	
-	public Student(StudentApp sa) throws RemoteException {
+
+    public Student(StudentApp sa) throws RemoteException {
 		super();
 		pointsCovered = new ArrayList<Point>();
 		this.sa = sa;
@@ -101,6 +105,7 @@ class Student extends NotificationSink {
 		sa.changeColour(ws.getCol());
 	    }
 	    return null;
+
 	}
 }
 

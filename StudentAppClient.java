@@ -13,7 +13,7 @@ public class StudentAppClient {
 				appFrame.setVisible(true);
 				appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				appFrame.setSize(FRAME_WIDTH,FRAME_LENGTH);
-				StudentAppPanel app = new StudentAppPanel();
+				StudentAppPane app = new StudentAppPane();
 				app.init();
 				appFrame.setContentPane(app);
 			}

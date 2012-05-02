@@ -15,12 +15,12 @@ public class StudentAppPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private StudentApp drawPanel;
 	
-	public void init(){
+	public void init(int id){
 		this.setLayout(new BorderLayout());
 		drawPanel = new StudentApp();
 		drawPanel.init();
 		LowerPanel lp = new LowerPanel();
-		lp.init(drawPanel.getStudent());
+		lp.init(drawPanel.getStudent(),id);
 		this.add(drawPanel,BorderLayout.CENTER);
 		this.add(lp,BorderLayout.SOUTH);
 	}
@@ -33,19 +33,22 @@ class LowerPanel extends JPanel {
 	private JButton registerButton;
 	private boolean isRegistered = false;
     private static final int MAX_TRIES = 10;
+    private boolean isRegistered1 = false;
+    private int ident;
 
-	public void init(final Student s){
-		this.setLayout(new GridLayout(1,3));
+    public void init(final Student s, final int id){
+		this.setLayout(new GridLayout(1,4));
 		this.add(new JLabel());
 		registerButton = new JButton("Register");
 		this.add(registerButton);
 		this.add(new JLabel());
+		this.ident = id;
 		class registerListener implements ActionListener {
 			public void actionPerformed(ActionEvent evt) {
 				if (isRegistered) {
 					try {
 					    NotificationSourceInterface source = (NotificationSourceInterface)
-						Naming.lookup("rmi://localhost/notificationSource");
+						Naming.lookup(new String("rmi://localhost/notificationSource"+Integer.toString(ident)));
 					    source.unregister(s);
 					    registerButton.setText("register");
 					} catch (Exception ex) {
@@ -56,7 +59,7 @@ class LowerPanel extends JPanel {
 					//run the register procedure
 					try {
 					    NotificationSourceInterface source = (NotificationSourceInterface)
-						Naming.lookup("rmi://localhost/notificationSource");
+						Naming.lookup(new String("rmi://localhost/notificationSource"+Integer.toString(ident)));
 					    source.register(s);
 					    registerButton.setText("unregister");
 					} catch (Exception ex) {
@@ -67,6 +70,7 @@ class LowerPanel extends JPanel {
 				isRegistered =! isRegistered;
 			}
 		}
+
 		registerButton.addActionListener(new registerListener());
 	}
 
@@ -75,7 +79,7 @@ class LowerPanel extends JPanel {
 	for (int i=0;i<MAX_TRIES;i++) {
 	    try {
 		NotificationSourceInterface source = (NotificationSourceInterface)
-						Naming.lookup("rmi://localhost/notificationSource");
+						Naming.lookup(new String("rmi://localhost/notificationSource"+Integer.toString(ident)));
 		source.unregister(sink);
 		return true;
 	    } catch (Exception e) {}
@@ -87,7 +91,7 @@ class LowerPanel extends JPanel {
       	for (int i=0;i<MAX_TRIES;i++) {
 	    try {
 		NotificationSourceInterface source = (NotificationSourceInterface)
-						Naming.lookup("rmi://localhost/notificationSource");
+						Naming.lookup(new String("rmi://localhost/notificationSource"+Integer.toString(ident)));
 		source.register(sink);
 		return true;
 	    } catch (Exception e) {}

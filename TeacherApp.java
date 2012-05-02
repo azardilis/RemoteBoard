@@ -29,14 +29,14 @@ public class TeacherApp extends JPanel implements MouseListener,MouseMotionListe
     private boolean clearing;
     private Color col;
     
-	public void init() {
+	public void init(int id) {
 		curveStroke = new BasicStroke(4);
 		pointsCovered = new ArrayList<Point>();
 		this.addMouseMotionListener(this);
 		this.addMouseListener(this);
 		try {
-			source = new NotificationSource();
-			Naming.rebind("notificationSource",source);
+		    source = new NotificationSource(new String("source" + Integer.toString(id)));
+		    Naming.rebind(new String("notificationSource"+Integer.toString(id)),source);
 		} catch (RemoteException e) {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

@@ -12,13 +12,13 @@ public class NotificationSource extends UnicastRemoteObject
     private String name;
     private Vector<ArrayBlockingQueue<Notification>> messages = new Vector<ArrayBlockingQueue<Notification>>();
 
-	public NotificationSource() throws RemoteException {
+	public NotificationSource(String name) throws RemoteException {
 		registeredSinks = new ArrayList<NotificationSinkInterface>();
-		this.name = "exampleSource";
+		this.name = name;
 	}
 	
 	public synchronized void fireEvent(Object info) {
-		Notification note = new Notification(info,this);
+		Notification note = new Notification(info,this.name);
 		for (int i=0;i<registeredSinks.size();i++) {
 		    NotificationSinkInterface sink = registeredSinks.get(i);
 		    if (messages.get(i).size() > 5) unregister(sink);
