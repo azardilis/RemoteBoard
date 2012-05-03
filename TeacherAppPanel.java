@@ -39,7 +39,7 @@ class LowerPanelTeacher extends JPanel {
 	
 	class changeColour implements ActionListener {
 	    public void actionPerformed(ActionEvent evt) {
-		ColorChooserDemo.createAndShowGUI(ta);
+		ColorChooser.createAndShowGUI(ta);
 	    }
 	}
 	chooseColour.addActionListener(new changeColour());
